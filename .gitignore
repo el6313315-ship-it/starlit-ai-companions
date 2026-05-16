@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+.env.local
+.vercel/
+output/
+.playwright-cli/
+废图/
+*.zip
+iPhone 17 - *.jpg

@@ -61,13 +61,18 @@ const iconMap = {
   关闭: X
 };
 
+function getHashView() {
+  const raw = window.location.hash.replace(/^#\/?/, '').trim();
+  return raw || 'home';
+}
+
 function Icon({ name, size = 22, strokeWidth = 2 }) {
   const Component = iconMap[name] || Sparkles;
   return <Component size={size} strokeWidth={strokeWidth} aria-hidden="true" />;
 }
 
 function App() {
-  const [view, setView] = useState(() => window.location.hash.replace('#', '') || 'home');
+  const [view, setView] = useState(getHashView);
   const [toast, setToast] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const [filter, setFilter] = useState('全部');
@@ -75,7 +80,7 @@ function App() {
   const [chatDraft, setChatDraft] = useState('');
 
   useEffect(() => {
-    const onHash = () => setView(window.location.hash.replace('#', '') || 'home');
+    const onHash = () => setView(getHashView());
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
@@ -86,6 +91,7 @@ function App() {
     return () => window.clearTimeout(timer);
   }, [toast]);
 
+  const knownViews = ['home', 'messages', 'profile', 'status-test'];
   const currentAgent = agents.find((agent) => agent.id === view);
   const currentMessage = view.startsWith('message-')
     ? messages.find((item) => `message-${item.id}` === view)
@@ -93,6 +99,8 @@ function App() {
   const currentPlaceholder = view.startsWith('placeholder-')
     ? decodeURIComponent(view.replace('placeholder-', ''))
     : null;
+  const isKnownView = knownViews.includes(view) || currentAgent || currentMessage || currentPlaceholder;
+  const activeView = isKnownView ? view : 'home';
 
   const navigate = (next) => {
     window.location.hash = next === 'home' ? '' : next;
@@ -112,12 +120,12 @@ function App() {
             <small>统一前端项目</small>
           </div>
         </div>
-        <NavButton id="home" active={view === 'home'} onClick={navigate} icon="首页" label="首页" />
-        <NavButton id="messages" active={view === 'messages'} onClick={navigate} icon="消息" label="消息" />
-        <NavButton id="profile" active={view === 'profile'} onClick={navigate} icon="我的" label="我的" />
+        <NavButton id="home" active={activeView === 'home'} onClick={navigate} icon="首页" label="首页" />
+        <NavButton id="messages" active={activeView === 'messages'} onClick={navigate} icon="消息" label="消息" />
+        <NavButton id="profile" active={activeView === 'profile'} onClick={navigate} icon="我的" label="我的" />
         <div className="nav-group-label">智能体入口</div>
         {agents.map((agent) => (
-          <NavButton key={agent.id} id={agent.id} active={view === agent.id} onClick={navigate} icon={agent.icon} label={agent.name} />
+          <NavButton key={agent.id} id={agent.id} active={activeView === agent.id} onClick={navigate} icon={agent.icon} label={agent.name} />
         ))}
       </aside>
 
@@ -126,10 +134,10 @@ function App() {
           <Icon name="菜单" />
         </button>
         <PhoneFrame>
-          {view === 'home' && <HomePage navigate={navigate} notify={notify} />}
-          {view === 'messages' && <MessagesPage navigate={navigate} filter={filter} setFilter={setFilter} />}
-          {view === 'profile' && <ProfilePage voiceOn={voiceOn} setVoiceOn={setVoiceOn} navigate={navigate} notify={notify} />}
-          {view === 'status-test' && <StatusTestPage navigate={navigate} notify={notify} />}
+          {activeView === 'home' && <HomePage navigate={navigate} notify={notify} />}
+          {activeView === 'messages' && <MessagesPage navigate={navigate} filter={filter} setFilter={setFilter} />}
+          {activeView === 'profile' && <ProfilePage voiceOn={voiceOn} setVoiceOn={setVoiceOn} navigate={navigate} notify={notify} />}
+          {activeView === 'status-test' && <StatusTestPage navigate={navigate} notify={notify} />}
           {currentMessage && <MessageDetailPage message={currentMessage} navigate={navigate} />}
           {currentPlaceholder && <PlaceholderPage title={currentPlaceholder} navigate={navigate} />}
           {currentAgent && (
@@ -141,7 +149,7 @@ function App() {
               notify={notify}
             />
           )}
-          {!currentAgent && !currentMessage && !currentPlaceholder && view !== 'status-test' && <BottomTabs active={view} navigate={navigate} />}
+          {!currentAgent && !currentMessage && !currentPlaceholder && activeView !== 'status-test' && <BottomTabs active={activeView} navigate={navigate} />}
         </PhoneFrame>
       </main>
 

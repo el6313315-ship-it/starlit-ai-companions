@@ -171,22 +171,8 @@ function NavButton({ id, active, onClick, icon, label }) {
 function PhoneFrame({ children }) {
   return (
     <section className="phone-shell" aria-label="移动端应用预览">
-      <StatusBar />
       {children}
     </section>
-  );
-}
-
-function StatusBar() {
-  return (
-    <div className="status-bar" aria-hidden="true">
-      <span>9:41</span>
-      <div className="signal">
-        <i /><i /><i />
-        <span className="wifi" />
-        <span className="battery" />
-      </div>
-    </div>
   );
 }
 
@@ -406,9 +392,13 @@ function ChatPage({ agent, draft, setDraft, navigate, notify }) {
     setDraft('');
     setIsSending(true);
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 25000);
+
     try {
       const response = await fetch('/api/coze/chat', {
         method: 'POST',
+        signal: controller.signal,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -418,9 +408,14 @@ function ChatPage({ agent, draft, setDraft, navigate, notify }) {
         })
       });
       const result = await response.json();
+      window.clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(result.error || '扣子接口调用失败');
+      }
+
+      if (!result.reply) {
+        throw new Error('智能体暂时没有返回可展示的回复');
       }
 
       setLocalMessages((items) =>
@@ -428,15 +423,21 @@ function ChatPage({ agent, draft, setDraft, navigate, notify }) {
       );
       notify('扣子回复已生成');
     } catch (error) {
+      const message = error.name === 'AbortError'
+        ? '智能体响应超时，请稍后重试。'
+        : error.message === 'Failed to fetch'
+          ? '网络连接失败，可能是本地 API 服务未启动、预览服务未重启，或线上函数连接中断。'
+          : error.message;
       setLocalMessages((items) =>
         items.map((item) =>
           item.id === loadingId
-            ? { from: 'agent', text: `扣子接入还没配置完成：${error.message}` }
+            ? { from: 'agent', text: agent.reply || `暂时没有连上智能体：${message}` }
             : item
         )
       );
       notify('扣子接口调用失败');
     } finally {
+      window.clearTimeout(timeoutId);
       setIsSending(false);
     }
   };

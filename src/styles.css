@@ -1115,10 +1115,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
   background: linear-gradient(135deg, #7449db, #b660ff);
 }
 
-.phone-shell:has(.figma-boss-chat) .status-bar,
-.phone-shell:has(.figma-echo-chat) .status-bar,
-.phone-shell:has(.figma-evening-chat) .status-bar,
-.phone-shell:has(.figma-clarity-chat) .status-bar { opacity: 0; }
 .figma-boss-chat,
 .figma-echo-chat,
 .figma-evening-chat,
@@ -1137,6 +1133,20 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
   bottom: 0;
   z-index: 10;
   height: 128px;
+  background: #01031a;
+  pointer-events: none;
+}
+.figma-boss-chat::before,
+.figma-echo-chat::before,
+.figma-evening-chat::before,
+.figma-clarity-chat::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 9;
+  height: 39px;
   background: #01031a;
   pointer-events: none;
 }
@@ -1854,10 +1864,16 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
     inset: 16px auto 16px 16px;
     z-index: 80;
     width: min(292px, calc(100vw - 32px));
+    visibility: hidden;
+    pointer-events: none;
     transform: translateX(calc(-100% - 28px));
     transition: transform .2s ease;
   }
-  .desktop-nav.is-open { transform: translateX(0); }
+  .desktop-nav.is-open {
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
   .stage { min-height: 100vh; padding: 12px 0; }
   .mobile-menu {
     position: fixed;
@@ -1884,11 +1900,19 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
   .stage { padding: 0; }
   .phone-shell {
     width: 100vw;
-    height: 100vh;
-    min-height: 874px;
+    height: 100dvh;
+    min-height: 0;
   }
   .home-screen {
+    overflow-y: auto;
     padding-left: max(14px, env(safe-area-inset-left));
     padding-right: max(14px, env(safe-area-inset-right));
+    scrollbar-width: none;
+  }
+  .home-screen::-webkit-scrollbar { display: none; }
+  .figma-flow-active .chat-log,
+  .figma-evening-chat.figma-flow-active .chat-log,
+  .figma-clarity-chat.figma-flow-active .chat-log {
+    bottom: 196px;
   }
 }

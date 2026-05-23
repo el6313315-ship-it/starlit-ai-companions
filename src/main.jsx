@@ -431,7 +431,7 @@ function ChatPage({ agent, draft, setDraft, navigate, notify }) {
       setLocalMessages((items) =>
         items.map((item) =>
           item.id === loadingId
-            ? { from: 'agent', text: agent.reply || `暂时没有连上智能体：${message}` }
+            ? { from: 'agent', text: `智能体接口没有正常返回：${message}` }
             : item
         )
       );

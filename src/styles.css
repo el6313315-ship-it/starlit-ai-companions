@@ -80,6 +80,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
   position: relative;
   width: 402px;
   height: 874px;
+  aspect-ratio: 402 / 874;
   min-height: 874px;
   overflow: hidden;
   border: 0;
@@ -398,8 +399,8 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
   height: 932.75px;
   left: -16.97px;
   top: -17.09px;
-  background: url('/assets/screens/messages.jpg') center / 100% 100% no-repeat;
-  clip-path: polygon(48% 0, 100% 0, 100% 31%, 42% 31%);
+  background: url('/assets/screens-clean/messages.jpg') center top / 100% auto no-repeat;
+  clip-path: polygon(48% 8%, 100% 8%, 100% 31%, 42% 31%);
   opacity: .24;
   pointer-events: none;
 }
@@ -571,7 +572,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
   content: "";
   position: absolute;
   inset: 0;
-  background: url('/assets/screens/messages.jpg') center / cover no-repeat;
+  background: url('/assets/screens-clean/messages.jpg') center top / cover no-repeat;
   opacity: .22;
   pointer-events: none;
 }
@@ -1136,31 +1137,17 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
   background: #01031a;
   pointer-events: none;
 }
-.figma-boss-chat::before,
-.figma-echo-chat::before,
-.figma-evening-chat::before,
-.figma-clarity-chat::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 9;
-  height: 39px;
-  background: #01031a;
-  pointer-events: none;
-}
 .figma-boss-chat {
-  background: url('/assets/screens/boss.jpg') center / 100% 100% no-repeat #01031a;
+  background: url('/assets/screens-clean/boss.jpg') center top / 100% auto no-repeat #01031a;
 }
 .figma-echo-chat {
-  background: url('/assets/screens/echo.jpg') center / 100% 100% no-repeat #01031a;
+  background: url('/assets/screens-clean/echo.jpg') center top / 100% auto no-repeat #01031a;
 }
 .figma-evening-chat {
-  background: url('/assets/screens/evening.jpg') center / 100% 100% no-repeat #01031a;
+  background: url('/assets/screens-clean/evening.jpg') center top / 100% auto no-repeat #01031a;
 }
 .figma-clarity-chat {
-  background: url('/assets/screens/clarity.jpg') center / 100% 100% no-repeat #01031a;
+  background: url('/assets/screens-clean/clarity.jpg') center top / 100% auto no-repeat #01031a;
 }
 .figma-boss-chat > *,
 .figma-echo-chat > *,
@@ -1897,10 +1884,14 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
 
 @media (max-width: 460px) {
   .mobile-menu { display: none; }
-  .stage { padding: 0; }
+  .stage {
+    min-height: 100dvh;
+    padding: 0;
+    overflow: hidden;
+  }
   .phone-shell {
-    width: 100vw;
-    height: 100dvh;
+    width: min(100vw, calc(100dvh * 402 / 874));
+    height: calc(min(100vw, calc(100dvh * 402 / 874)) * 874 / 402);
     min-height: 0;
   }
   .home-screen {

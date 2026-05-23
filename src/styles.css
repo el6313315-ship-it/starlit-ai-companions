@@ -1137,6 +1137,45 @@ button:focus-visible, input:focus-visible { outline: 2px solid #d777ff; outline-
   background: #01031a;
   pointer-events: none;
 }
+.figma-boss-chat::before,
+.figma-echo-chat::before,
+.figma-evening-chat::before,
+.figma-clarity-chat::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+.figma-evening-chat::before {
+  width: 407.1px;
+  height: 263.7px;
+  right: -6.31px;
+  bottom: 611.04px;
+  background-image: url('/assets/chat-bg/evening.jpg');
+}
+.figma-echo-chat::before {
+  width: 407.1px;
+  height: 272.36px;
+  right: -4.03px;
+  bottom: 555.8px;
+  background-image: url('/assets/chat-bg/echo.jpg');
+}
+.figma-boss-chat::before {
+  width: 407.1px;
+  height: 224.59px;
+  right: 0;
+  bottom: 598.3px;
+  background-image: url('/assets/chat-bg/boss.jpg');
+}
+.figma-clarity-chat::before {
+  width: 407.1px;
+  height: 244.57px;
+  right: -8.8px;
+  bottom: 629.43px;
+  background-image: url('/assets/chat-bg/clarity.jpg');
+}
 .figma-boss-chat {
   background: url('/assets/screens-clean/boss.jpg') center top / 100% auto no-repeat #01031a;
 }
